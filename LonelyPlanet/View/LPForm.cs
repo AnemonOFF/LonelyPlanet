@@ -18,10 +18,15 @@ namespace LonelyPlanet
             ShowMainMenu();
         }
 
-        private void ShowMainMenu()
+        public void ShowMainMenu()
         {
             HideAllWindows();
             mainMenu.Show();
+        }
+
+        public void ShowLoadingScreen()
+        {
+            HideAllWindows();
         }
 
         private void HideAllWindows()
