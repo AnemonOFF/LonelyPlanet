@@ -48,6 +48,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Biomes.cs" />
+    <Compile Include="Model\Blocks.cs" />
+    <Compile Include="Model\Chunk.cs" />
+    <Compile Include="Model\Map.cs" />
+    <Compile Include="Model\Mountain.cs" />
+    <Compile Include="Model\Plain.cs" />
     <Compile Include="View\LoadingScreen.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -131,9 +137,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Static\gui\logo\logo.png" />
   </ItemGroup>

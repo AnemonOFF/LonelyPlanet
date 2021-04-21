@@ -59,6 +59,7 @@
             this.BackgroundImage = global::LonelyPlanet.Properties.Resources.Nebula_Blue;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.Controls.Add(this.table);
+            this.DoubleBuffered = true;
             this.Name = "MainMenu";
             this.Size = new System.Drawing.Size(854, 480);
             this.ResumeLayout(false);

@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LPForm));
             this.mainMenu = new LonelyPlanet.View.MainMenu();
+            this.loadingScreen = new LonelyPlanet.View.LoadingScreen();
             this.SuspendLayout();
             // 
             // mainMenu
@@ -43,12 +44,23 @@
             this.mainMenu.Size = new System.Drawing.Size(854, 480);
             this.mainMenu.TabIndex = 0;
             // 
+            // loadingScreen
+            // 
+            this.loadingScreen.BackColor = System.Drawing.Color.Transparent;
+            this.loadingScreen.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.loadingScreen.Location = new System.Drawing.Point(0, 0);
+            this.loadingScreen.Name = "loadingScreen";
+            this.loadingScreen.Size = new System.Drawing.Size(854, 480);
+            this.loadingScreen.TabIndex = 1;
+            // 
             // LPForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(854, 480);
+            this.Controls.Add(this.loadingScreen);
             this.Controls.Add(this.mainMenu);
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximumSize = new System.Drawing.Size(1920, 1080);
             this.MinimumSize = new System.Drawing.Size(870, 519);
@@ -61,6 +73,7 @@
         #endregion
 
         private View.MainMenu mainMenu;
+        private View.LoadingScreen loadingScreen;
     }
 }
 

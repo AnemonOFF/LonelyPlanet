@@ -16,32 +16,27 @@ namespace LonelyPlanet.View
 {
     public partial class MainMenu : UserControl
     {
-        private readonly MediaPlayer musicPlayer = new MediaPlayer();
+        //private readonly MediaPlayer musicPlayer = new MediaPlayer();
+        public event Action<Screen> ChangeScreen;
 
         public MainMenu()
         {
             InitializeComponent();
             CreateMenuGUI();
-            PlayBackgroundMusic();
+            var map = new Model.Map();
+            map.PrintMapInFile(@"map.txt");
         }
 
-        private void PlayBackgroundMusic()
-        {
-            var music = new Uri(@"..\..\Static\sounds\music\menu.wav", UriKind.Relative);
-            musicPlayer.Open(music);
-            musicPlayer.Play();
-            musicPlayer.MediaEnded += (sender, e) => {
-                musicPlayer.Open(music);
-                musicPlayer.Play();
-            };
-        }
-
-        public void ChangeBackgroundMusicVolume(int volume)
-        {
-            if (volume < 0 || volume > 100)
-                throw new ArgumentException("Volume have to be in 0 to 100 range");
-            musicPlayer.Volume = volume;
-        }
+        //private void PlayBackgroundMusic()
+        //{
+        //    var music = new Uri(@"sounds\music\menu.wav", UriKind.Relative);
+        //    musicPlayer.Open(music);
+        //    musicPlayer.Play();
+        //    musicPlayer.MediaEnded += (sender, e) => {
+        //        musicPlayer.Open(music);
+        //        musicPlayer.Play();
+        //    };
+        //}
 
         private void CreateMenuGUI()
         {
@@ -62,10 +57,10 @@ namespace LonelyPlanet.View
                 BackgroundImage = Properties.Resources.lonelyplanet,
                 BackgroundImageLayout = ImageLayout.Stretch
             };
-            var loadGameButton = CreateMenuButton("Load Game");
-            var newGameButton = CreateMenuButton("New Game");
-            var multiplayerButton = CreateMenuButton("Multiplayer");
-            var settingsButton = CreateMenuButton("Settings");
+            var loadGameButton = CreateMenuButton("Load Game", Screen.Loading);
+            var newGameButton = CreateMenuButton("New Game", Screen.Loading);
+            var multiplayerButton = CreateMenuButton("Multiplayer", Screen.Multiplayer);
+            var settingsButton = CreateMenuButton("Settings", Screen.Settings);
             table.Controls.Add(logo, 1, 1);
             table.Controls.Add(loadGameButton, 1, 2);
             table.Controls.Add(newGameButton, 1, 3);
@@ -74,7 +69,7 @@ namespace LonelyPlanet.View
             table.Controls.Add(ico, 2, 6);
         }
 
-        private Button CreateMenuButton(string text)
+        private Button CreateMenuButton(string text, Screen screen)
         {
             var button = new Button
             {
@@ -100,6 +95,9 @@ namespace LonelyPlanet.View
                 button.ForeColor = Color.FromArgb(255, 243, 137);
                 button.BackColor = Color.Transparent;
             };
+            button.MouseClick += (sender, e) => {
+                ChangeScreen?.Invoke(screen);
+                };
             return button;
         }
     }

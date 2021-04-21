@@ -15,6 +15,7 @@ namespace LonelyPlanet.View
         public LoadingScreen()
         {
             InitializeComponent();
+            LoadingBG.settings.setMode("loop", true);
         }
     }
 }
