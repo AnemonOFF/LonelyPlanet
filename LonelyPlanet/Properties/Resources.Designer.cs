@@ -61,12 +61,30 @@ namespace LonelyPlanet.Properties {
         }
         
         /// <summary>
+        ///   Поиск локализованного ресурса типа System.IO.UnmanagedMemoryStream, аналогичного System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream battle {
+            get {
+                return ResourceManager.GetStream("battle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap buttonbg {
             get {
                 object obj = ResourceManager.GetObject("buttonbg", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.IO.UnmanagedMemoryStream, аналогичного System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream loading {
+            get {
+                return ResourceManager.GetStream("loading", resourceCulture);
             }
         }
         
@@ -87,6 +105,15 @@ namespace LonelyPlanet.Properties {
             get {
                 object obj = ResourceManager.GetObject("lonelyplanet", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.IO.UnmanagedMemoryStream, аналогичного System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream menu {
+            get {
+                return ResourceManager.GetStream("menu", resourceCulture);
             }
         }
         

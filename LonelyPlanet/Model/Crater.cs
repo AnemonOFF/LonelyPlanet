@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace LonelyPlanet.Model
 {
-    class Mountain : IBiome
+    class Crater : IBiome
     {
         private readonly Chunk[] chunks;
         private readonly int startedHeight;
-        private readonly int topHeight;
+        private readonly int bottomHeight;
         private const int MaxHeightDifference = 4;
 
         public string Name { get; } = "Mountain";
@@ -25,15 +25,13 @@ namespace LonelyPlanet.Model
             }
         }
 
-        public Mountain(Chunk referance, int x, int length)
+        public Crater(Chunk referance, int x, int length)
         {
             LeftX = x;
             Length = length;
-            startedHeight = referance.Height;
-            topHeight = startedHeight + Map.randomGenerator.Next(startedHeight + 50, startedHeight + 150);
-            if (topHeight > Map.chunkSize)
-                topHeight = Map.chunkSize;
             chunks = new Chunk[Length];
+            startedHeight = referance.Height;
+            bottomHeight = startedHeight - Map.randomGenerator.Next(20, 50);
             var heights = GenerateChunksHeight();
             for (var i = 0; i < Length; i++)
                 chunks[i] = GenerateChunk(LeftX + i, heights[i]);
@@ -43,12 +41,12 @@ namespace LonelyPlanet.Model
         {
             var halfWidth = Length / 2 - Map.randomGenerator.Next(1, 5);
             var chunks = new int[Length];
-            var firstSlope = GenerateSlope(halfWidth, startedHeight, topHeight);
+            var firstSlope = GenerateSlope(halfWidth, startedHeight, bottomHeight);
             for (var i = 0; i < halfWidth; i++)
                 chunks[i] = firstSlope[i];
             for (var i = halfWidth; i < Length - halfWidth; i++)
                 chunks[i] = chunks[i - 1];
-            var secondSlope = GenerateSlope(halfWidth, topHeight, startedHeight);
+            var secondSlope = GenerateSlope(halfWidth, bottomHeight, startedHeight);
             for (var i = 0; i < halfWidth; i++)
                 chunks[i + Length - halfWidth] = secondSlope[i];
             return chunks;
@@ -71,12 +69,12 @@ namespace LonelyPlanet.Model
                     chunks[i] = start;
             }
             int maxRandomLength = Length - 1;
-            for(var i = start + 1; i < end; i++)
+            for (var i = start + 1; i < end; i++)
             {
                 var randomLength = Map.randomGenerator.Next(1, maxRandomLength);
-                for(var h = Length - 1; h > Length - 1 - randomLength && h > 1; h--)
+                for (var h = Length - 1; h > Length - 1 - randomLength && h > 1; h--)
                 {
-                    if(chunks[h] < i && chunks[h] - 4 < chunks[h - 1])
+                    if (chunks[h] < i && chunks[h] - 4 < chunks[h - 1])
                         chunks[h] = i;
                 }
             }

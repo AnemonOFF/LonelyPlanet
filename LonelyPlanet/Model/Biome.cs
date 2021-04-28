@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LonelyPlanet.Model
 {
-    interface IBiome
+    public interface IBiome
     {
         string Name { get; }
         int Length { get; }
@@ -14,15 +14,19 @@ namespace LonelyPlanet.Model
         Chunk this[int index] { get; }
     }
 
-    static class Biomes
+    static class Biome
     {
         private enum BiomeTypes
         {
-            Plain
+            Plain,
+            Mountain,
+            Crater
         }
 
         private static readonly Tuple<double, BiomeTypes>[] BiomesProbability = new Tuple<double, BiomeTypes>[] {
-            new Tuple<double, BiomeTypes>(1.0, BiomeTypes.Plain)
+            new Tuple<double, BiomeTypes>(0.5, BiomeTypes.Plain),
+            new Tuple<double, BiomeTypes>(0.75, BiomeTypes.Mountain),
+            new Tuple<double, BiomeTypes>(1.0, BiomeTypes.Crater)
         };
 
         public static IBiome GenerateRandomBiome(Chunk referance, int x)
@@ -37,6 +41,10 @@ namespace LonelyPlanet.Model
             {
                 case BiomeTypes.Plain:
                     return new Plain(referance, x, Map.randomGenerator.Next(200, 400));
+                case BiomeTypes.Mountain:
+                    return new Mountain(referance, x, Map.randomGenerator.Next(50, 100));
+                case BiomeTypes.Crater:
+                    return new Crater(referance, x, Map.randomGenerator.Next(50, 100));
                 default:
                     throw new ArgumentException("Wrong biome type, I have no idea how this exception can be thrown, probably that can happaned with future updates");
             }

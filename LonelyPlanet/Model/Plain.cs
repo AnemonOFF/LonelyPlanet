@@ -24,7 +24,7 @@
             averageHeight = referance.Height;
             chunks = new Chunk[Length];
             chunks[0] = GenerateChunk(referance, 0);
-            for (int i = 1; i < Length; i++)
+            for (var i = 1; i < Length; i++)
                 chunks[i] = GenerateChunk(chunks[i - 1], LeftX + i);
         }
 
@@ -32,9 +32,9 @@
         {
             var height = GetRandomChunkHeight(referance.Height);
             var blocks = new IBlock[height];
-            for (int i = 0; i < height - 10; i++)
+            for (var i = 0; i < height - 10; i++)
                 blocks[i] = Block.GetRandomUndergroundBlock(x, i);
-            for (int i = height - 10; i < height; i++)
+            for (var i = height - 10; i < height; i++)
                 blocks[i] = new Rock(x, i);
             return new Chunk(x, height, blocks);
         }

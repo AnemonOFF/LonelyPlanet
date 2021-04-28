@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LonelyPlanet.Model
 {
-    static class Block
+    public static class Block
     {
         private enum BlockTypes
         {
@@ -41,17 +41,15 @@ namespace LonelyPlanet.Model
         }
     }
 
-    interface IBlock
+    public interface IBlock
     {
         string Name { get; }
-        Image Image { get; }
         Point Location { get; }
     }
 
-    class Air : IBlock
+    public class Air : IBlock
     {
         public string Name { get; } = "Air";
-        public Image Image { get; }
         public Point Location { get; }
 
         public Air(int x, int y)
@@ -60,10 +58,9 @@ namespace LonelyPlanet.Model
         }
     }
 
-    class Rock : IBlock
+    public class Rock : IBlock
     {
         public string Name { get; } = "Rock";
-        public Image Image { get; }
         public Point Location { get; }
 
         public Rock(int x, int y)
@@ -72,10 +69,9 @@ namespace LonelyPlanet.Model
         }
     }
 
-    class Gold : IBlock
+    public class Gold : IBlock
     {
         public string Name { get; } = "Gold";
-        public Image Image { get; }
         public Point Location { get; }
 
         public Gold(int x, int y)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LonelyPlanet.Model
 {
-    class Chunk
+    public class Chunk
     {
         private readonly IBlock[] blocks = new IBlock[Map.chunkSize];
 
