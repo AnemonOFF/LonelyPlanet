@@ -21,6 +21,7 @@ namespace LonelyPlanet.View
         private UserControl loadingScreen;
         private int leftX;
         private int rightX;
+        private bool isInitialized = false;
 
         public readonly Game game = new Game();
         public Size PlayerSize { get; } = new Size(40, 80);
@@ -38,10 +39,11 @@ namespace LonelyPlanet.View
             biomes.Add(firstBiome);
             leftX = firstBiome.LeftX;
             rightX = firstBiome.LeftX + firstBiome.Length;
+            isInitialized = true;
             CheckForBiomesRelevance();
 
             var updateTimer = new Timer {
-                Interval = 10,
+                Interval = 16,
             };
             updateTimer.Tick += (sender, args) => Invalidate();
             updateTimer.Start();
@@ -105,11 +107,13 @@ namespace LonelyPlanet.View
 
         private void CheckForBiomesRelevance()
         {
+            if (!isInitialized)
+                return;
             var playerPosition = game.player.GetPosition();
             var halfScreenBlocksAmount = (Width - PlayerSize.Width) / 2 / BlockSize.Width;
             while (playerPosition.X - halfScreenBlocksAmount - leftX < addBiomeDelta)
                 AddNextBiome(Direction.left);
-            while (rightX - playerPosition.X + halfScreenBlocksAmount < addBiomeDelta)
+            while (rightX - playerPosition.X - halfScreenBlocksAmount < addBiomeDelta)
                 AddNextBiome(Direction.right);
         }
 
