@@ -8,34 +8,33 @@ using System.Windows.Forms;
 
 namespace LonelyPlanet.Model
 {
-    public class Coordinate
-    {
-        public double X { get; set; }
-        public double Y { get; set; }
-    }
-
     public class Entity
     {
-        protected const int updateInterval = 100;
+        protected const int updateInterval = 10;
+        protected Vector movementSpeed;
+        protected double maxMovementSpeed = 5;
         protected Timer updateTimer = new Timer { Interval = updateInterval};
         protected Coordinate position;
         protected Vector speed;
         protected Map map;
         protected List<EntityForce> forces;
+        protected bool isOnGround = false;
 
         public string Name { get; }
-        public double Health { get; protected set; } = 0;
+        public double Health { get; protected set; } = 100;
         public double Armor { get; protected set; } = 0;
         public double Mass { get; protected set; }
+        public bool IsDead { get; protected set; } = false;
 
         public Entity(string name, Coordinate position, double mass, Map map)
         {
             this.map = map;
+            this.position = new Coordinate (position.X, position.Y);
             Mass = mass;
-            this.position = new Coordinate { X = position.X, Y = position.Y };
             Name = name;
 
             speed = new Vector(0, 0);
+            movementSpeed = new Vector(0, 0);
             forces = new List<EntityForce>();
             forces.Add((m, p) => new Vector(0, -m * Game.g));
 
@@ -43,9 +42,26 @@ namespace LonelyPlanet.Model
             updateTimer.Start();
         }
 
+        public void Hit(double damage)
+        {
+            Health -= damage;
+            if (Health <= 0)
+            {
+                Health = 0;
+                IsDead = true;
+            }
+        }
+
+        public void Heal(double heal)
+        {
+            Health += heal;
+            if (Health > 0)
+                IsDead = false;
+        }
+
         protected void UpdateSpeed()
         {
-            var t = 1000 / updateInterval;
+            var t = updateInterval / 1000.0;
             var resultantForces = new Vector();
             foreach (var force in forces)
                 resultantForces += force.Invoke(Mass, position);
@@ -56,11 +72,48 @@ namespace LonelyPlanet.Model
         {
             lock (position)
             {
-                var t = 1000 / updateInterval;
-                if(map.GetChunk((int)(position.X + speed.X * t))[(int)position.Y].Name == "Air")
+                var t = updateInterval / 1000.0;
+                int nextX;
+                int nextY;
+                if (speed.X > 0)
+                    nextX = (int)Math.Ceiling(position.X + speed.X * t);
+                else
+                    nextX = (int)Math.Floor(position.X + speed.X * t);
+                if (speed.Y > 0)
+                    nextY = (int)Math.Ceiling(position.Y + speed.Y * t);
+                else 
+                    nextY = (int)Math.Floor(position.Y + speed.Y * t);
+                var xChunk = map.GetChunk(nextX);
+                var yChunk = map.GetChunk((int)position.X);
+                //new Log("nextX: "+nextX+"; nextY: "+nextY+"; posX: "+position.X+"; posY: "+position.Y, name: "pos.log").WriteLog(isAppend: true);
+                if (speed.X != 0 &&
+                    xChunk[(int)position.Y].Name == "Air" &&
+                    ((int)position.Y + 1 >= Map.chunkSize || xChunk[(int)position.Y + 1].Name == "Air"))
+                {
                     position.X += speed.X * t;
-                if(map.GetChunk((int)position.X)[(int)(position.Y + speed.Y * t)].Name == "Air")
+                } else
+                {
+                    if (speed.X > 0)
+                        position.X = nextX - 1;
+                    if (speed.X < 0)
+                        position.X = nextX + 1;
+                    speed.X = 0;
+                    movementSpeed.X = 0;
+                }
+                if (nextY < 0 || nextY > Map.chunkSize || speed.Y != 0 && yChunk[nextY].Name == "Air")
+                {
                     position.Y += speed.Y * t;
+                    isOnGround = false;
+                } else
+                {
+                    if (speed.Y > 0)
+                        position.Y = nextY - 1;
+                    if (speed.Y < 0)
+                        position.Y = nextY + 1;
+                    speed.Y = 0;
+                    isOnGround = true;
+                    movementSpeed.Y = 0;
+                }
             }
         }
 
@@ -69,13 +122,34 @@ namespace LonelyPlanet.Model
             switch (direction)
             {
                 case Direction.left:
-                    speed.X -= 1.7;
+                    if (movementSpeed.X != -maxMovementSpeed)
+                    {
+                        speed.X -= maxMovementSpeed;
+                        movementSpeed.X = -maxMovementSpeed;
+                    }
                     break;
                 case Direction.right:
-                    speed.X += 1.7;
+                    if (movementSpeed.X != maxMovementSpeed)
+                    {
+                        speed.X += maxMovementSpeed;
+                        movementSpeed.X = maxMovementSpeed;
+                    }
                     break;
                 default:
                     throw new ArgumentException("Wrong direction. Entity can move only left or right");
+            }
+        }
+
+        public void ResetMovementSpeed(Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.horizontal:
+                    speed.X -= movementSpeed.X;
+                    movementSpeed.X = 0;
+                    break;
+                default:
+                    throw new ArgumentException("Wrong direction. Reset can be applied only horizontal");
             }
         }
 
@@ -86,11 +160,12 @@ namespace LonelyPlanet.Model
             => forces.Remove(force);
 
         public Coordinate GetPosition()
-            => new Coordinate { X = position.X, Y = position.Y };
+            => new Coordinate(position.X, position.Y);
 
         public void Jump()
         {
-            speed.Y += 2;
+            if(isOnGround)
+                speed.Y += 5;
         }
     }
 }

@@ -45,12 +45,14 @@ namespace LonelyPlanet.Model
     {
         string Name { get; }
         Point Location { get; }
+        Bitmap Texture { get; }
     }
 
     public class Air : IBlock
     {
         public string Name { get; } = "Air";
         public Point Location { get; }
+        public Bitmap Texture { get; } = GameSprites.BlockAir;
 
         public Air(int x, int y)
         {
@@ -62,6 +64,7 @@ namespace LonelyPlanet.Model
     {
         public string Name { get; } = "Rock";
         public Point Location { get; }
+        public Bitmap Texture { get; } = GameSprites.BlockRock;
 
         public Rock(int x, int y)
         {
@@ -73,6 +76,7 @@ namespace LonelyPlanet.Model
     {
         public string Name { get; } = "Gold";
         public Point Location { get; }
+        public Bitmap Texture { get; } = GameSprites.BlockGold;
 
         public Gold(int x, int y)
         {

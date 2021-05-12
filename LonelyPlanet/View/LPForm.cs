@@ -22,6 +22,7 @@ namespace LonelyPlanet
     public partial class LPForm : Form
     {
         public static readonly MediaPlayer musicPlayer = new MediaPlayer();
+        private UserControl currentScreen;
 
         private static void PlayBackgroundMusic(Uri music)
         {
@@ -48,7 +49,7 @@ namespace LonelyPlanet
         public LPForm()
         {
             InitializeComponent();
-            mainMenu.ChangeScreen += OnScreenChange;
+            //mainMenu.ChangeScreen += OnScreenChange;
             ShowMainMenu();
             PlayBackgroundMusic(new Uri(@"sounds\music\menu.wav", UriKind.Relative));
         }
@@ -56,39 +57,65 @@ namespace LonelyPlanet
         private void OnScreenChange(Screen screen)
         {
             Cursor = Cursors.Default;
+            HideAllWindows();
             switch (screen)
             {
                 case Screen.MainMenu:
                     ShowMainMenu();
-                    ClearBackgroundMusic();
-                    PlayBackgroundMusic(new Uri(@"sounds\music\menu.wav", UriKind.Relative));
                     break;
                 case Screen.Loading:
-                    ClearBackgroundMusic();
-                    PlayBackgroundMusic(new Uri(@"sounds\music\loading.wav", UriKind.Relative));
                     ShowLoadingScreen();
                     break;
                 case Screen.Game:
+                    ShowGame();
                     break;
+                default:
+                    throw new ArgumentException("Unknown screen");
             }
+        }
+
+        private void ShowGame()
+        {
+            currentScreen = new View.GameScreen();
+            ParameteriseAndShowScreen(currentScreen, name: "gameScreen");
+            PlayBackgroundMusic(new Uri(@"sounds\music\meet-the-princess.wav", UriKind.Relative));
         }
 
         private void ShowMainMenu()
         {
-            HideAllWindows();
-            mainMenu.Show();
+            currentScreen = new View.MainMenu();
+            ((View.MainMenu)currentScreen).ChangeScreen += OnScreenChange;
+            ParameteriseAndShowScreen(currentScreen, bg: Properties.Resources.Nebula_Blue, name: "mainMenu");
+            PlayBackgroundMusic(new Uri(@"sounds\music\menu.wav", UriKind.Relative));
         }
 
         private void ShowLoadingScreen()
         {
-            HideAllWindows();
-            loadingScreen.Show();
+            currentScreen = new View.LoadingScreen();
+            ParameteriseAndShowScreen(currentScreen, name: "loadingScreen");
+            PlayBackgroundMusic(new Uri(@"sounds\music\loading.wav", UriKind.Relative));
+        }
+
+        private void ParameteriseAndShowScreen(UserControl screen, Image bg = null, string name = null)
+        {
+            screen.Dock = DockStyle.Fill;
+            screen.BackColor = System.Drawing.Color.Transparent;
+            screen.Location = new Point(0, 0);
+            if (bg != null)
+            {
+                screen.BackgroundImage = bg;
+                screen.BackgroundImageLayout = ImageLayout.None;
+            }
+            if (name != null)
+                screen.Name = name;
+            Controls.Add(screen);
         }
 
         private void HideAllWindows()
         {
-            mainMenu.Hide();
-            loadingScreen.Hide();
+            if (currentScreen != null)
+                Controls.Remove(currentScreen);
+            ClearBackgroundMusic();
         }
     }
 }

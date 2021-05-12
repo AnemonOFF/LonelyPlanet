@@ -11,6 +11,8 @@ namespace LonelyPlanet.Model
         left,
         right,
         top,
-        bottom
+        bottom,
+        horizontal,
+        vertical
     }
 }

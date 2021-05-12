@@ -36,28 +36,51 @@ namespace LonelyPlanet.Model
 
         public Chunk GetChunk(int x)
         {
-            return biomes[xToBiomeID[x]][x];
+            var biome = biomes[xToBiomeID[x]];
+            return biome[x - biome.LeftX];
         }
 
-        public async void GenerateNextBiome(Direction direction)
+        public IBiome GetBiomeByX(int x)
+        {
+            while (x < biomes[leftBiomeIndex].LeftX)
+                GenerateNextBiome(Direction.left);
+            while (x > biomes[rightBiomeIndex].LeftX + biomes[rightBiomeIndex].Length)
+                GenerateNextBiome(Direction.right);
+            return biomes[xToBiomeID[x]];
+        }
+
+        public void GenerateNextBiome(Direction direction)
         {
             Chunk chunkReferance;
             int biomeIndex;
-            if (direction == Direction.left) {
+            int x;
+            if (direction == Direction.left)
+            {
                 chunkReferance = biomes[leftBiomeIndex][0];
+                x = chunkReferance.X - 1;
                 biomeIndex = leftBiomeIndex - 1;
                 leftBiomeIndex--;
             }
-            else {
+            else if (direction == Direction.right)
+            {
                 chunkReferance = biomes[rightBiomeIndex][biomes[rightBiomeIndex].Length - 1];
+                x = chunkReferance.X + 1;
                 biomeIndex = rightBiomeIndex + 1;
                 rightBiomeIndex++;
             }
-            var result = await new Task<IBiome>(()=> Biome.GenerateRandomBiome(chunkReferance, biomeIndex));
-            biomes.Add(biomeIndex, result);
+            else
+                throw new ArgumentException("direction can be only left or right");
+            var result = Biome.GenerateRandomBiome(chunkReferance, x, direction);
+            lock (biomes)
+            {
+                biomes.Add(biomeIndex, result);
+            }
             Width += result.Length;
-            for (int i = biomes[biomeIndex].LeftX; i < biomes[biomeIndex].Length + biomes[biomeIndex].LeftX; i++)
-                xToBiomeID[i] = biomeIndex;
+            lock (xToBiomeID)
+            {
+                for (int i = biomes[biomeIndex].LeftX; i < biomes[biomeIndex].Length + biomes[biomeIndex].LeftX; i++)
+                    xToBiomeID[i] = biomeIndex;
+            }
         }
 
         public void PrintMapInFile(string path)

@@ -1,4 +1,6 @@
-﻿namespace LonelyPlanet.Model
+﻿using System.Drawing;
+
+namespace LonelyPlanet.Model
 {
     class Plain : IBiome
     {
@@ -8,6 +10,7 @@
         public int Length { get; }
         public int LeftX { get; }
         public string Name { get; } = "Plain";
+        public Bitmap Render { get; set; }
 
         public Chunk this[int index]
         {

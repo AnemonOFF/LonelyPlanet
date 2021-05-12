@@ -57,7 +57,7 @@ namespace LonelyPlanet.View
                 BackgroundImage = Properties.Resources.lonelyplanet,
                 BackgroundImageLayout = ImageLayout.Stretch
             };
-            var loadGameButton = CreateMenuButton("Load Game", Screen.Loading);
+            var loadGameButton = CreateMenuButton("Load Game", Screen.Game);
             var newGameButton = CreateMenuButton("New Game", Screen.Loading);
             var multiplayerButton = CreateMenuButton("Multiplayer", Screen.Multiplayer);
             var settingsButton = CreateMenuButton("Settings", Screen.Settings);
