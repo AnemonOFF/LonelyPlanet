@@ -58,6 +58,9 @@
     <Compile Include="Model\Entity.cs" />
     <Compile Include="Model\Force.cs" />
     <Compile Include="Model\Game.cs" />
+    <Compile Include="Model\Inventory.cs" />
+    <Compile Include="Model\Item.cs" />
+    <Compile Include="Model\Liquid.cs" />
     <Compile Include="Model\Log.cs" />
     <Compile Include="Model\Map.cs" />
     <Compile Include="Model\Mountain.cs" />
@@ -71,6 +74,9 @@
       <DependentUpon>GameScreen.cs</DependentUpon>
     </Compile>
     <Compile Include="View\GameScreenCotroller.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\GameScreenGUI.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="View\LoadingScreen.cs">
@@ -171,6 +177,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Static\sounds\music\loading.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Static\gui\loading-64.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Static\gui\loadingGif.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Static\background\SpaceBG.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Static\background\marsbg.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

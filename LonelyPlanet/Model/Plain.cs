@@ -11,6 +11,7 @@ namespace LonelyPlanet.Model
         public int LeftX { get; }
         public string Name { get; } = "Plain";
         public Bitmap Render { get; set; }
+        public bool NeedToRender { get; set; } = false;
 
         public Chunk this[int index]
         {
@@ -26,7 +27,7 @@ namespace LonelyPlanet.Model
             Length = length;
             averageHeight = referance.Height;
             chunks = new Chunk[Length];
-            chunks[0] = GenerateChunk(referance, 0);
+            chunks[0] = GenerateChunk(referance, x);
             for (var i = 1; i < Length; i++)
                 chunks[i] = GenerateChunk(chunks[i - 1], LeftX + i);
         }

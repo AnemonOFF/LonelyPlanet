@@ -14,9 +14,10 @@ namespace LonelyPlanet.Model
         int LeftX { get; }
         Chunk this[int index] { get; }
         Bitmap Render { get; set; }
+        bool NeedToRender { get; set; }
     }
 
-    static class Biome
+    public static class Biome
     {
         private enum BiomeTypes
         {
@@ -33,8 +34,8 @@ namespace LonelyPlanet.Model
 
         public static IBiome GenerateRandomBiome(Chunk referance, int x, Direction direction)
         {
-            var probability = Map.randomGenerator.NextDouble();
-            //var probability = 0.2;
+            //var probability = Map.randomGenerator.NextDouble();
+            var probability = 0.2;
             //new Log("Probabiliy: "+probability, name: "prob.log").WriteLog(isAppend: true);
             int len;
             switch (

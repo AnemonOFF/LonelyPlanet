@@ -91,6 +91,16 @@ namespace LonelyPlanet.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap loadingGif {
+            get {
+                object obj = ResourceManager.GetObject("loadingGif", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap logo {
             get {
                 object obj = ResourceManager.GetObject("logo", resourceCulture);
@@ -104,6 +114,16 @@ namespace LonelyPlanet.Properties {
         internal static System.Drawing.Bitmap lonelyplanet {
             get {
                 object obj = ResourceManager.GetObject("lonelyplanet", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap marsbg {
+            get {
+                object obj = ResourceManager.GetObject("marsbg", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,6 +143,16 @@ namespace LonelyPlanet.Properties {
         internal static System.Drawing.Bitmap Nebula_Blue {
             get {
                 object obj = ResourceManager.GetObject("Nebula Blue", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SpaceBG {
+            get {
+                object obj = ResourceManager.GetObject("SpaceBG", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

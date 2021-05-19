@@ -8,7 +8,7 @@ namespace LonelyPlanet.Model
 {
     public static class Attributes
     {
-        public static readonly Attribute Player = new Attribute(new Dictionary<string, double> { {"MaxHealth", 100}, {"MaxOxygen", 100} });
+        public static readonly Attribute Player = new Attribute(new Dictionary<string, double> { {"MaxHealth", 100}, {"MaxOxygen", 100}, { "MaxHotBarAmount", 6}, { "MaxSolidAmount", 24}, { "MaxLiquidAmount", 10000} });
     }
 
     public class Attribute

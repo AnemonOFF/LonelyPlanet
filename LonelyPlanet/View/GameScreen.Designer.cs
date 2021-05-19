@@ -35,6 +35,8 @@ namespace LonelyPlanet.View
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackgroundImage = global::LonelyPlanet.Properties.Resources.marsbg;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.Name = "GameScreen";
             this.Size = new System.Drawing.Size(854, 480);
             this.ResumeLayout(false);

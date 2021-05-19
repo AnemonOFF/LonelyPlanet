@@ -43,6 +43,7 @@ namespace LonelyPlanet.Model
 
     public interface IBlock
     {
+        Item Drop { get; }
         string Name { get; }
         Point Location { get; }
         Bitmap Texture { get; }
@@ -50,6 +51,7 @@ namespace LonelyPlanet.Model
 
     public class Air : IBlock
     {
+        public Item Drop { get; }
         public string Name { get; } = "Air";
         public Point Location { get; }
         public Bitmap Texture { get; } = GameSprites.BlockAir;
@@ -62,6 +64,7 @@ namespace LonelyPlanet.Model
 
     public class Rock : IBlock
     {
+        public Item Drop { get; } = new RockItem();
         public string Name { get; } = "Rock";
         public Point Location { get; }
         public Bitmap Texture { get; } = GameSprites.BlockRock;
@@ -74,6 +77,7 @@ namespace LonelyPlanet.Model
 
     public class Gold : IBlock
     {
+        public Item Drop { get; } = new GoldOreItem();
         public string Name { get; } = "Gold";
         public Point Location { get; }
         public Bitmap Texture { get; } = GameSprites.BlockGold;

@@ -4,21 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Forms;
+using System.Timers;
 
 namespace LonelyPlanet.Model
 {
     public class Entity
     {
-        protected const int updateInterval = 10;
+        protected const int updateInterval = 16;
         protected Vector movementSpeed;
         protected double maxMovementSpeed = 5;
-        protected Timer updateTimer = new Timer { Interval = updateInterval};
+        protected Timer updateTimer = new Timer { Interval = updateInterval, AutoReset = true};
         protected Coordinate position;
         protected Vector speed;
         protected Map map;
         protected List<EntityForce> forces;
         protected bool isOnGround = false;
+
+        public delegate void EntityEventHandler(Entity entity);
+        public event EntityEventHandler HealthChanged;
 
         public string Name { get; }
         public double Health { get; protected set; } = 100;
@@ -35,10 +38,12 @@ namespace LonelyPlanet.Model
 
             speed = new Vector(0, 0);
             movementSpeed = new Vector(0, 0);
-            forces = new List<EntityForce>();
-            forces.Add((m, p) => new Vector(0, -m * Game.g));
+            forces = new List<EntityForce>
+            {
+                (m, p) => new Vector(0, -m * Game.g)
+            };
 
-            updateTimer.Tick += (sender, args) => { UpdateSpeed(); Move(); };
+            updateTimer.Elapsed += (sender, args) => { UpdateSpeed(); Move(); };
             updateTimer.Start();
         }
 
@@ -50,6 +55,7 @@ namespace LonelyPlanet.Model
                 Health = 0;
                 IsDead = true;
             }
+            HealthChanged?.Invoke(this);
         }
 
         public void Heal(double heal)
@@ -57,6 +63,7 @@ namespace LonelyPlanet.Model
             Health += heal;
             if (Health > 0)
                 IsDead = false;
+            HealthChanged?.Invoke(this);
         }
 
         protected void UpdateSpeed()

@@ -18,6 +18,7 @@ namespace LonelyPlanet.Model
         public int Length { get; }
         public int LeftX { get; }
         public Bitmap Render { get; set; }
+        public bool NeedToRender { get; set; } = false;
 
         public Chunk this[int index]
         {

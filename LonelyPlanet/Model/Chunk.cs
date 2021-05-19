@@ -44,5 +44,10 @@ namespace LonelyPlanet.Model
                         this.blocks[i] = new Air(x, i);
                 }
         }
+
+        public void ChangeBlock(IBlock newBlock, int y)
+        {
+            blocks[y] = newBlock;
+        }
     }
 }
