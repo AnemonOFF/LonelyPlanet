@@ -57,6 +57,7 @@
     <Compile Include="EntityTest.cs" />
     <Compile Include="InventoryTest.cs" />
     <Compile Include="MapTest.cs" />
+    <Compile Include="PlayerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

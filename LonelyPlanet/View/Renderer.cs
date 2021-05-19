@@ -28,19 +28,20 @@ namespace LonelyPlanet.View
             {
                 var graphics = Graphics.FromImage(inventory.HotbarRender);
                 graphics.DrawImage(GameSprites.GuiHotbar, 0, 0, HotbarSize.Width, HotbarSize.Height);
-                var itemCounter = 0;
-                foreach(var cell in inventory.GetHotBarCells())
+                for(var i = 0; i < inventory.HotBarMaxAmount; i++)
                 {
+                    var cell = inventory.GetCell(i);
+                    if (cell is null)
+                        continue;
                     graphics.DrawImage(cell.Item.Texture,
-                        HotbarPxPadding + HotbarPxInterval * itemCounter,
+                        HotbarPxPadding + HotbarItemSize.Width * i + HotbarPxInterval * i,
                         HotbarPxPadding,
                         HotbarItemSize.Width,
                         HotbarItemSize.Height);
                     graphics.DrawString(cell.Count.ToString(),
                         new Font("Arial", 12),
                         Brushes.Goldenrod,
-                        new Point(HotbarPxPadding + HotbarPxInterval * itemCounter, HotbarPxPadding));
-                    itemCounter++;
+                        new Point(HotbarPxPadding + HotbarItemSize.Width * i + HotbarPxInterval * i, HotbarPxPadding));
                 }
             }
         }
