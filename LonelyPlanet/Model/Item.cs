@@ -22,6 +22,37 @@ namespace LonelyPlanet.Model
         public abstract IBlock GetBlock(int x, int y);
     }
 
+    public abstract class Spawner : Item
+    {
+        public override bool IsPlaceable { get; } = false;
+        public abstract Type EntityType { get; }
+
+        public Spawner(Bitmap texture, string name) : base (texture, name)
+        {
+        }
+
+        public override IBlock GetBlock(int x, int y)
+        {
+            return null;
+        }
+
+        public void SpawnEntity(Map map, Player owner, Coordinate coordinate)
+        {
+            map.entities.Add((Entity)EntityType.
+                GetConstructor(new Type[] { typeof(Player), typeof(string), typeof(Coordinate), typeof(double), typeof(Map)})
+                .Invoke(new object[] { owner, "DevMiner", coordinate, 100, map}));
+        }
+    }
+
+    public class MinerSpawnerItem : Spawner
+    {
+        public override Type EntityType { get; } = typeof(Miner);
+
+        public MinerSpawnerItem() : base (GameSprites.Miner, "Miner")
+        {
+        }
+    }
+
     public class RockItem : Item
     {
         public override bool IsPlaceable { get; } = true;

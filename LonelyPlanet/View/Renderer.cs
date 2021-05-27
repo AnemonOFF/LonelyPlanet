@@ -10,38 +10,84 @@ namespace LonelyPlanet.View
 {
     class Renderer
     {
-        private readonly Size BlockSize;
-        private readonly Size HotbarSize = new Size(400, 84);
-        private readonly Size HotbarItemSize = new Size(31, 31);
-        private readonly int HotbarPxInterval = 31;
-        private readonly int HotbarPxPadding = 27;
+        private readonly Size blockSize;
+        private readonly Size hotbarSize = new Size(400, 84);
+        private readonly Size hotbarItemSize = new Size(31, 31);
+        private readonly Size hotbarCellSize = new Size(58, 56);
+        private readonly Size inventorySize = new Size(402, 394);
+        private readonly Size inventoryItemSize = new Size(31, 31);
+        private readonly int hotbarPxInterval = 31;
+        private readonly int hotbarPxCellsInterval = 5;
+        private readonly int hotbarPxPadding = 27;
+        private readonly int hotbarPxCellsPadding = 13;
+        private readonly int inventoryPxInterval = 31;
+        private readonly int inventoryPxPaddingX = 27;
+        private readonly int inventoryPxPaddingY = 75;
 
         public Renderer(Size blockSize)
         {
-            BlockSize = blockSize;
+            this.blockSize = blockSize;
         }
 
-        public void RenderHotbar(Inventory inventory)
+        public void RenderInventory(Inventory inventory)
         {
-            inventory.HotbarRender = new Bitmap(HotbarSize.Width, HotbarSize.Height);
-            lock (inventory.HotbarRender)
+            inventory.Render = new Bitmap(inventorySize.Width, inventorySize.Height);
+            lock (inventory.Render)
             {
-                var graphics = Graphics.FromImage(inventory.HotbarRender);
-                graphics.DrawImage(GameSprites.GuiHotbar, 0, 0, HotbarSize.Width, HotbarSize.Height);
-                for(var i = 0; i < inventory.HotBarMaxAmount; i++)
+                var graphics = Graphics.FromImage(inventory.Render);
+                graphics.DrawImage(GameSprites.GuiInventory, 0, 0, inventorySize.Width, inventorySize.Height);
+                var row = 0;
+                for (var i = 0; i < inventory.SolidMaxAmount; i++)
                 {
                     var cell = inventory.GetCell(i);
                     if (cell is null)
                         continue;
+                    var column = row == 0 ? i : i % row;
                     graphics.DrawImage(cell.Item.Texture,
-                        HotbarPxPadding + HotbarItemSize.Width * i + HotbarPxInterval * i,
-                        HotbarPxPadding,
-                        HotbarItemSize.Width,
-                        HotbarItemSize.Height);
+                        inventoryPxPaddingX + inventoryItemSize.Width * column + inventoryPxInterval * column,
+                        inventoryPxPaddingY + inventoryItemSize.Height * row + inventoryPxInterval * row,
+                        inventoryItemSize.Width,
+                        inventoryItemSize.Height);
+                    graphics.DrawString(cell.Count.ToString(),
+                        new Font("Aria", 12),
+                        Brushes.Goldenrod,
+                        new Point(
+                            inventoryPxPaddingX + inventoryItemSize.Width * column + inventoryPxInterval * column,
+                            inventoryPxPaddingY + inventoryItemSize.Height * row + inventoryPxInterval * row)
+                        );
+                }
+            }
+        }
+
+        public void RenderHotbar(Inventory inventory, Player player)
+        {
+            inventory.HotbarRender = new Bitmap(hotbarSize.Width, hotbarSize.Height);
+            lock (inventory.HotbarRender)
+            {
+                var graphics = Graphics.FromImage(inventory.HotbarRender);
+                graphics.DrawImage(GameSprites.GuiHotbar, 0, 0, hotbarSize.Width, hotbarSize.Height);
+                for(var i = 0; i < inventory.HotBarMaxAmount; i++)
+                {
+                    var cell = inventory.GetCell(i);
+                    if(player.CurrentHotBar == i)
+                    {
+                        graphics.DrawImage(GameSprites.GuiHotbarCurrent,
+                            hotbarPxCellsPadding + hotbarCellSize.Width * i + hotbarPxCellsInterval * i,
+                            hotbarPxCellsPadding,
+                            hotbarCellSize.Width,
+                            hotbarCellSize.Height);
+                    }
+                    if (cell is null)
+                        continue;
+                    graphics.DrawImage(cell.Item.Texture,
+                        hotbarPxPadding + hotbarItemSize.Width * i + hotbarPxInterval * i,
+                        hotbarPxPadding,
+                        hotbarItemSize.Width,
+                        hotbarItemSize.Height);
                     graphics.DrawString(cell.Count.ToString(),
                         new Font("Arial", 12),
                         Brushes.Goldenrod,
-                        new Point(HotbarPxPadding + HotbarItemSize.Width * i + HotbarPxInterval * i, HotbarPxPadding));
+                        new Point(hotbarPxPadding + hotbarItemSize.Width * i + hotbarPxInterval * i, hotbarPxPadding));
                 }
             }
         }
@@ -51,7 +97,7 @@ namespace LonelyPlanet.View
             biome.NeedToRender = false;
             if (biome.Render != null)
                 biome.Render.Dispose();
-            biome.Render = new Bitmap(biome.Length * BlockSize.Width, Map.chunkSize * BlockSize.Height);
+            biome.Render = new Bitmap(biome.Length * blockSize.Width, Map.chunkSize * blockSize.Height);
             lock (biome.Render)
             {
                 var graphics = Graphics.FromImage(biome.Render);
@@ -65,7 +111,7 @@ namespace LonelyPlanet.View
 
         private void RenderChunk(Graphics graphics, Chunk chunk, int chunkNumber)
         {
-            var x = chunkNumber * BlockSize.Width;
+            var x = chunkNumber * blockSize.Width;
             for (var y = 0; y < Map.chunkSize; y++)
             {
                 var block = chunk[y];
@@ -73,14 +119,14 @@ namespace LonelyPlanet.View
                     continue;
                 lock (block.Texture)
                 {
-                    RenderBlock(graphics, block.Texture, x, (Map.chunkSize - y) * BlockSize.Height);
+                    RenderBlock(graphics, block.Texture, x, (Map.chunkSize - y) * blockSize.Height);
                 }
             }
         }
 
         private void RenderBlock(Graphics graphics, Image texture, int x, int y)
         {
-            graphics.DrawImage(texture, x, y, BlockSize.Width, BlockSize.Height);
+            graphics.DrawImage(texture, x, y, blockSize.Width, blockSize.Height);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace LonelyPlanet.Model
 {    
@@ -15,7 +16,13 @@ namespace LonelyPlanet.Model
         public Game()
         {
             map = new Map();
-            player = new Player("Dev", new Coordinate (0, 102), 80, map);
+            player = new Player("Dev", new Coordinate (0, 101), 80, map);
+            SetUpGame();
+        }
+
+        private void SetUpGame()
+        {
+            player.Inventory.AddItem(new MinerSpawnerItem());
         }
     }
 }

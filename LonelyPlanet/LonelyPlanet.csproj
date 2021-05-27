@@ -66,6 +66,7 @@
     <Compile Include="Model\Mountain.cs" />
     <Compile Include="Model\Plain.cs" />
     <Compile Include="Model\Player.cs" />
+    <Compile Include="Model\Miner.cs" />
     <Compile Include="Model\Sprites.cs" />
     <Compile Include="View\GameScreen.cs">
       <SubType>UserControl</SubType>
@@ -100,6 +101,12 @@
       <DependentUpon>MainMenu.cs</DependentUpon>
     </Compile>
     <Compile Include="View\Renderer.cs" />
+    <Compile Include="View\Settings.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="View\Settings.Designer.cs">
+      <DependentUpon>Settings.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="View\GameScreen.resx">
       <DependentUpon>GameScreen.cs</DependentUpon>
     </EmbeddedResource>
@@ -121,6 +128,9 @@
     </Compile>
     <EmbeddedResource Include="View\MainMenu.resx">
       <DependentUpon>MainMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Settings.resx">
+      <DependentUpon>Settings.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

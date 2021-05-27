@@ -13,6 +13,8 @@ namespace LonelyPlanet.Model
         private const int manipulateMaxDistance = 7;
 
         public event EntityEventHandler OxygenChanged;
+        public event EntityEventHandler BlockPlace;
+        public event EntityEventHandler BlockDestroy;
 
         public double Oxygen { get; private set; }
         public double MaxOxygen { get; }
@@ -20,7 +22,7 @@ namespace LonelyPlanet.Model
         public Inventory Inventory { get; }
         public int CurrentHotBar { get; set; }
 
-        public Player(string name, Coordinate position, double mass, Map map) : base(name, position, mass, map)
+        public Player(string name, Coordinate position, double mass, Map map) : base(name, position, mass, map, new Size(1, 2))
         {
             MaxHealth = Attributes.Player.Get("MaxHealth");
             Health = MaxHealth;
@@ -36,7 +38,7 @@ namespace LonelyPlanet.Model
                 if(Oxygen <= 0)
                 {
                     Oxygen = 0;
-                    Health--;
+                    Hit(1);
                 }
                 OxygenChanged?.Invoke(this);
             };
@@ -45,7 +47,7 @@ namespace LonelyPlanet.Model
 
         public void ManipulateBlock(Point blockPosition)
         {
-            if (blockPosition.Y >= Map.chunkSize)
+            if (blockPosition.Y >= Map.chunkSize || blockPosition.Y < 0)
                 return;
             if (Math.Sqrt(Math.Pow(position.X - blockPosition.X, 2) + Math.Pow(position.Y - blockPosition.Y, 2)) > manipulateMaxDistance)
                 return;
@@ -56,17 +58,22 @@ namespace LonelyPlanet.Model
                 {
                     var newBlock = Inventory.GetBlockFromItem(CurrentHotBar, blockPosition.X, blockPosition.Y);
                     if (newBlock != null)
-                    {
                         PlaceBlock(newBlock);
-                        map.GetBiomeByX(blockPosition.X).NeedToRender = true;
+                    else
+                    {
+                        var spawner = Inventory.GetSpawnerFromItem(CurrentHotBar);
+                        if (spawner != null)
+                            Spawn(spawner, blockPosition);
                     }
                 }
             }
             else
-            {
                 DestroyBlock(blockPosition);
-                map.GetBiomeByX(blockPosition.X).NeedToRender = true;
-            }
+        }
+
+        private void Spawn(Spawner spawner, Point position)
+        {
+            spawner.SpawnEntity(map, this, new Coordinate(position.X, position.Y));
         }
 
         private void DestroyBlock(Point blockPosition)
@@ -75,12 +82,16 @@ namespace LonelyPlanet.Model
             if(chunk[blockPosition.Y].Drop != null)
                 Inventory.AddItem(chunk[blockPosition.Y].Drop);
             chunk.ChangeBlock(new Air(blockPosition.X, blockPosition.Y), blockPosition.Y);
+            map.GetBiomeByX(blockPosition.X).NeedToRender = true;
+            BlockDestroy?.Invoke(this);
         }
 
         private void PlaceBlock(IBlock block)
         {
             var chunk = map.GetChunk(block.Location.X);
             chunk.ChangeBlock(block, block.Location.Y);
+            map.GetBiomeByX(block.Location.X).NeedToRender = true;
+            BlockPlace?.Invoke(this);
         }
     }
 }

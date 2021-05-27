@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,9 +15,12 @@ namespace LonelyPlanet.Model
         private readonly Dictionary<int, int> xToBiomeID = new Dictionary<int, int>();
         private int rightBiomeIndex = 0;
         private int leftBiomeIndex = 0;
-        public int Width { get; private set; }
+
+        public List<Entity> entities;
         public static readonly Random randomGenerator = new Random();
         public static readonly int chunkSize = 255;
+
+        public int Width { get; private set; }
 
         public IBiome this[int x]
         {
@@ -32,6 +36,13 @@ namespace LonelyPlanet.Model
             for (int i = biomes[0].LeftX; i < biomes[0].Length + biomes[0].LeftX; i++)
                 xToBiomeID[i] = 0;
             Width = biomes[0].Length;
+            entities = new List<Entity>();
+        }
+
+        public void RemoveEntity(Entity entity)
+        {
+            entities.Remove(entity);
+            entity = null;
         }
 
         public Chunk GetChunk(int x)
@@ -43,9 +54,9 @@ namespace LonelyPlanet.Model
         public IBiome GetBiomeByX(int x)
         {
             while (x < biomes[leftBiomeIndex].LeftX)
-                GenerateNextBiome(Direction.left);
+                GenerateNextBiome(Direction.Left);
             while (x > biomes[rightBiomeIndex].LeftX + biomes[rightBiomeIndex].Length)
-                GenerateNextBiome(Direction.right);
+                GenerateNextBiome(Direction.Right);
             return biomes[xToBiomeID[x]];
         }
 
@@ -54,14 +65,14 @@ namespace LonelyPlanet.Model
             Chunk chunkReferance;
             int biomeIndex;
             int x;
-            if (direction == Direction.left)
+            if (direction == Direction.Left)
             {
                 chunkReferance = biomes[leftBiomeIndex][0];
                 x = chunkReferance.X - 1;
                 biomeIndex = leftBiomeIndex - 1;
                 leftBiomeIndex--;
             }
-            else if (direction == Direction.right)
+            else if (direction == Direction.Right)
             {
                 chunkReferance = biomes[rightBiomeIndex][biomes[rightBiomeIndex].Length - 1];
                 x = chunkReferance.X + 1;
@@ -83,46 +94,53 @@ namespace LonelyPlanet.Model
             }
         }
 
-        public void PrintMapInFile(string path)
+        public delegate bool PathReturnAction(IBlock block);
+
+        public List<Point> GetPath(Point startPoint, PathReturnAction returnAction)
         {
-            var sw = new StreamWriter(path, false, Encoding.UTF8);
-            var map = new char[Width, chunkSize];
-            var line = 0;
-            for(int i = leftBiomeIndex; i <= rightBiomeIndex; i++)
+            var queue = new Queue<List<Point>>();
+            var visited = new HashSet<Point>();
+            queue.Enqueue(new List<Point> { startPoint});
+            visited.Add(startPoint);
+            while(queue.Count != 0)
             {
-                var currentBiome = biomes[i];
-                for(int j = 0; j < currentBiome.Length; j++)
+                var currentList = queue.Dequeue();
+                var currentPoint = currentList.Last();
+                if (returnAction.Invoke(GetChunk(currentPoint.X)[currentPoint.Y]))
+                    return currentList;
+                for(var dy = -1; dy <= 1; dy++)
                 {
-                    var currentChunk = currentBiome[j];
-                    for(int b = 0; b < chunkSize; b++)
+                    for(var dx = -1; dx <= 1; dx++)
                     {
-                        var currentBlock = currentChunk[b];
-                        switch (currentBlock.Name)
+                        if (dx != 0 && dy != 0)
+                            continue;
+                        var nextPoint = new Point(currentPoint.X + dx, currentPoint.Y + dy);
+                        if (!IsPointCorrect(nextPoint, visited))
+                            continue;
+                        visited.Add(nextPoint);
+                        var nextList = new List<Point>(currentList)
                         {
-                            case "Air":
-                                map[line, b] = ' ';
-                                break;
-                            case "Rock":
-                                map[line, b] = '*';
-                                break;
-                            case "Gold":
-                                map[line, b] = 'G';
-                                break;
-                            default:
-                                throw new Exception();
-                        }
+                            nextPoint
+                        };
+                        queue.Enqueue(nextList);
                     }
-                    line++;
                 }
             }
-            for(int i = map.GetLength(1) - 1; i >= 0; i--)
-            {
-                var sb = new StringBuilder();
-                for (int j = 0; j < map.GetLength(0); j++)
-                    sb.Append(map[j, i]);
-                sw.WriteLine(sb.ToString());
-            }
-            sw.Close();
+            return null;
+        }
+
+        private bool IsPointCorrect(Point point, HashSet<Point> visited)
+        {
+            if (point.X < biomes[leftBiomeIndex].LeftX ||
+                point.X >= biomes[rightBiomeIndex].LeftX + biomes[rightBiomeIndex].Length)
+                return false;
+            if (point.Y < 0 || point.Y >= chunkSize)
+                return false;
+            if (visited.Contains(point))
+                return false;
+            var chunk = GetChunk(point.X);
+            return chunk[point.Y].IsBreakable ||
+                (point.Y > 1 && chunk[point.Y].Name == "Air" && chunk[point.Y - 1].Name != "Air");
         }
     }
 }

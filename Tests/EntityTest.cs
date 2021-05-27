@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using LonelyPlanet.Model;
+using System.Drawing;
 
 namespace Tests
 {
@@ -22,7 +23,7 @@ namespace Tests
         [Test]
         public void Heal()
         {
-            var entity = new Entity("Test", new Coordinate(0, 0), 100, map);
+            var entity = new Entity("Test", new Coordinate(0, 0), 100, map, new Size(1, 1));
             var currentHealth = entity.Health;
             entity.Heal(10);
             Assert.AreEqual(currentHealth + 10, entity.Health);
@@ -31,7 +32,7 @@ namespace Tests
         [Test]
         public void Hit()
         {
-            var entity = new Entity("Test", new Coordinate(0, 0), 100, map);
+            var entity = new Entity("Test", new Coordinate(0, 0), 100, map, new Size(1, 1));
             var currentHealth = entity.Health;
             entity.Hit(5);
             Assert.AreEqual(currentHealth - 5, entity.Health);
@@ -40,7 +41,7 @@ namespace Tests
         [Test]
         public void DoMoreDamageThenHealth()
         {
-            var entity = new Entity("Test", new Coordinate(0, 0), 100, map);
+            var entity = new Entity("Test", new Coordinate(0, 0), 100, map, new Size(1, 1));
             var currentHealth = entity.Health;
             entity.Hit(currentHealth + 10);
             Assert.AreEqual(0, entity.Health);
@@ -50,7 +51,7 @@ namespace Tests
         [Test]
         public void HealWhenDead()
         {
-            var entity = new Entity("Test", new Coordinate(0, 0), 100, map);
+            var entity = new Entity("Test", new Coordinate(0, 0), 100, map, new Size(1, 1));
             var currentHealth = entity.Health;
             entity.Hit(currentHealth);
             entity.Heal(10);
@@ -61,16 +62,16 @@ namespace Tests
         [Test]
         public void HealEventInvoke()
         {
-            var entity = new Entity("Test", new Coordinate(0, 0), 100, map);
-            entity.HealthChanged += (e) => Assert.Pass();
+            var entity = new Entity("Test", new Coordinate(0, 0), 100, map, new Size(1, 1));
+            entity.HealthChangedEvent += (e) => Assert.Pass();
             entity.Heal(1);
         }
 
         [Test]
         public void HitEventInvoke()
         {
-            var entity = new Entity("Test", new Coordinate(0, 0), 100, map);
-            entity.HealthChanged += (e) => Assert.Pass();
+            var entity = new Entity("Test", new Coordinate(0, 0), 100, map, new Size(1, 1));
+            entity.HealthChangedEvent += (e) => Assert.Pass();
             entity.Hit(1);
         }
     }

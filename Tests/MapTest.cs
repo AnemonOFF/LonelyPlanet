@@ -36,10 +36,10 @@ namespace Tests
         {
             var map = new Map();
             var currentWidth = map.Width;
-            map.GenerateNextBiome(Direction.right);
+            map.GenerateNextBiome(Direction.Right);
             Assert.IsTrue(map.Width > currentWidth);
             currentWidth = map.Width;
-            map.GenerateNextBiome(Direction.left);
+            map.GenerateNextBiome(Direction.Left);
             Assert.IsTrue(map.Width > currentWidth);
         }
 

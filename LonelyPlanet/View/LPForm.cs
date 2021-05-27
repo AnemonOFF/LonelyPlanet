@@ -21,30 +21,10 @@ namespace LonelyPlanet
 
     public partial class LPForm : Form
     {
-        public static readonly MediaPlayer musicPlayer = new MediaPlayer();
+        public readonly MediaPlayer musicPlayer = new MediaPlayer();
         private UserControl currentScreen;
-
-        private static void PlayBackgroundMusic(Uri music)
-        {
-            musicPlayer.Open(music);
-            musicPlayer.Play();
-            musicPlayer.MediaEnded += (sender, e) => {
-                musicPlayer.Open(music);
-                musicPlayer.Play();
-            };
-        }
-
-        public static void ChangeBackgroundMusicVolume(int volume)
-        {
-            if (volume < 0 || volume > 100)
-                throw new ArgumentException("Volume have to be in 0 to 100 range");
-            musicPlayer.Volume = volume;
-        }
-
-        private static void ClearBackgroundMusic()
-        {
-            musicPlayer.Close();
-        }
+        private int bgMusicVolume = 100;
+        private int soundsVolume = 100;
 
         public LPForm()
         {
@@ -52,6 +32,37 @@ namespace LonelyPlanet
             //mainMenu.ChangeScreen += OnScreenChange;
             ShowMainMenu();
             PlayBackgroundMusic(new Uri(@"sounds\music\menu.wav", UriKind.Relative));
+        }
+
+        public void ChangeBackgroundMusicVolume(int volume)
+        {
+            if (volume < 0 || volume > 100)
+                throw new ArgumentException("Volume have to be in 0 to 100 range");
+            musicPlayer.Volume = volume / 100.0;
+        }
+
+        private void PlayBackgroundMusic(Uri music)
+        {
+            musicPlayer.Open(music);
+            musicPlayer.Play();
+            musicPlayer.Volume = bgMusicVolume / 100.0;
+            musicPlayer.MediaEnded += (sender, e) => {
+                musicPlayer.Open(music);
+                musicPlayer.Play();
+                musicPlayer.Volume = bgMusicVolume;
+            };
+        }
+
+        private void ClearBackgroundMusic()
+        {
+            musicPlayer.Close();
+        }
+
+        private void ChangeVolume(int bgMusic, int sounds)
+        {
+            bgMusicVolume = bgMusic;
+            soundsVolume = sounds;
+            ChangeBackgroundMusicVolume(bgMusic);
         }
 
         private void OnScreenChange(Screen screen)
@@ -69,6 +80,9 @@ namespace LonelyPlanet
                 case Screen.Game:
                     ShowGame();
                     break;
+                case Screen.Settings:
+                    ShowSettings();
+                    break;
                 default:
                     throw new ArgumentException("Unknown screen");
             }
@@ -76,7 +90,7 @@ namespace LonelyPlanet
 
         private void ShowGame()
         {
-            currentScreen = new View.GameScreen();
+            currentScreen = new View.GameScreen(soundsVolume);
             ParameteriseAndShowScreen(currentScreen, name: "gameScreen");
             PlayBackgroundMusic(new Uri(@"sounds\music\meet-the-princess.wav", UriKind.Relative));
         }
@@ -94,6 +108,15 @@ namespace LonelyPlanet
             currentScreen = new View.LoadingScreen();
             ParameteriseAndShowScreen(currentScreen, name: "loadingScreen");
             PlayBackgroundMusic(new Uri(@"sounds\music\loading.wav", UriKind.Relative));
+        }
+
+        private void ShowSettings()
+        {
+            currentScreen = new View.Settings();
+            ((View.Settings)currentScreen).ChangeScreen += OnScreenChange;
+            ((View.Settings)currentScreen).ChangeVolume += ChangeVolume;
+            ParameteriseAndShowScreen(currentScreen, bg: Properties.Resources.Nebula_Blue, name: "settings");
+            PlayBackgroundMusic(new Uri(@"sounds\music\menu.wav", UriKind.Relative));
         }
 
         private void ParameteriseAndShowScreen(UserControl screen, Image bg = null, string name = null)

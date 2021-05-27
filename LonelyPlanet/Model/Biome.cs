@@ -27,15 +27,14 @@ namespace LonelyPlanet.Model
         }
 
         private static readonly Tuple<double, BiomeTypes>[] BiomesProbability = new Tuple<double, BiomeTypes>[] {
-            new Tuple<double, BiomeTypes>(0.5, BiomeTypes.Plain),
+            new Tuple<double, BiomeTypes>(0.2, BiomeTypes.Plain),
             new Tuple<double, BiomeTypes>(0.75, BiomeTypes.Mountain),
             new Tuple<double, BiomeTypes>(1.0, BiomeTypes.Crater)
         };
 
         public static IBiome GenerateRandomBiome(Chunk referance, int x, Direction direction)
         {
-            //var probability = Map.randomGenerator.NextDouble();
-            var probability = 0.2;
+            var probability = Map.randomGenerator.NextDouble();
             //new Log("Probabiliy: "+probability, name: "prob.log").WriteLog(isAppend: true);
             int len;
             switch (
@@ -47,17 +46,17 @@ namespace LonelyPlanet.Model
             {
                 case BiomeTypes.Plain:
                     len = Map.randomGenerator.Next(200, 400);
-                    if (direction == Direction.left)
+                    if (direction == Direction.Left)
                         x -= len - 1;
                     return new Plain(referance, x, len);
                 case BiomeTypes.Mountain:
                     len = Map.randomGenerator.Next(50, 100);
-                    if (direction == Direction.left)
+                    if (direction == Direction.Left)
                         x -= len - 1;
                     return new Mountain(referance, x, len);
                 case BiomeTypes.Crater:
                     len = Map.randomGenerator.Next(50, 100);
-                    if (direction == Direction.left)
+                    if (direction == Direction.Left)
                         x -= len - 1;
                     return new Crater(referance, x, len);
                 default:

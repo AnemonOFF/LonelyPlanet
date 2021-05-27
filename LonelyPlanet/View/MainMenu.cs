@@ -23,8 +23,6 @@ namespace LonelyPlanet.View
         {
             InitializeComponent();
             CreateMenuGUI();
-            var map = new Model.Map();
-            map.PrintMapInFile(@"map.txt");
         }
 
         //private void PlayBackgroundMusic()
@@ -57,8 +55,8 @@ namespace LonelyPlanet.View
                 BackgroundImage = Properties.Resources.lonelyplanet,
                 BackgroundImageLayout = ImageLayout.Stretch
             };
-            var loadGameButton = CreateMenuButton("Load Game", Screen.Game);
-            var newGameButton = CreateMenuButton("New Game", Screen.Loading);
+            var loadGameButton = CreateMenuButton("Load Game", Screen.Loading);
+            var newGameButton = CreateMenuButton("New Game", Screen.Game);
             var multiplayerButton = CreateMenuButton("Multiplayer", Screen.Multiplayer);
             var settingsButton = CreateMenuButton("Settings", Screen.Settings);
             table.Controls.Add(logo, 1, 1);

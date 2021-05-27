@@ -47,6 +47,7 @@ namespace LonelyPlanet.Model
         string Name { get; }
         Point Location { get; }
         Bitmap Texture { get; }
+        bool IsBreakable { get; }
     }
 
     public class Air : IBlock
@@ -55,6 +56,7 @@ namespace LonelyPlanet.Model
         public string Name { get; } = "Air";
         public Point Location { get; }
         public Bitmap Texture { get; } = GameSprites.BlockAir;
+        public bool IsBreakable { get; } = false;
 
         public Air(int x, int y)
         {
@@ -68,6 +70,7 @@ namespace LonelyPlanet.Model
         public string Name { get; } = "Rock";
         public Point Location { get; }
         public Bitmap Texture { get; } = GameSprites.BlockRock;
+        public bool IsBreakable { get; } = true;
 
         public Rock(int x, int y)
         {
@@ -81,6 +84,7 @@ namespace LonelyPlanet.Model
         public string Name { get; } = "Gold";
         public Point Location { get; }
         public Bitmap Texture { get; } = GameSprites.BlockGold;
+        public bool IsBreakable { get; } = true;
 
         public Gold(int x, int y)
         {

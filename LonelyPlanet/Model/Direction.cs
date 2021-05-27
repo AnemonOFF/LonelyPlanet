@@ -8,11 +8,14 @@ namespace LonelyPlanet.Model
 {
     public enum Direction
     {
-        left,
-        right,
-        top,
-        bottom,
-        horizontal,
-        vertical
+        Left,
+        Right,
+        Up,
+        Down,
+        Top,
+        Bottom,
+        Horizontal,
+        Vertical,
+        None
     }
 }

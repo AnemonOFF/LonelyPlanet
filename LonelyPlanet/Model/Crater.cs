@@ -65,17 +65,17 @@ namespace LonelyPlanet.Model
             }
             var chunks = new int[length];
             chunks[length - 1] = end;
-            for (var i = Length - 2; i >= 0; i--)
+            for (var i = length - 2; i >= 0; i--)
             {
-                chunks[i] = chunks[i - 1] - MaxHeightDifference;
+                chunks[i] = chunks[i + 1] - MaxHeightDifference;
                 if (chunks[i] < start)
                     chunks[i] = start;
             }
-            int maxRandomLength = Length - 1;
+            int maxRandomLength = length - 1;
             for (var i = start + 1; i < end; i++)
             {
                 var randomLength = Map.randomGenerator.Next(1, maxRandomLength);
-                for (var h = Length - 1; h > Length - 1 - randomLength && h > 1; h--)
+                for (var h = length - 1; h > length - 1 - randomLength && h > 1; h--)
                 {
                     if (chunks[h] < i && chunks[h] - 4 < chunks[h - 1])
                         chunks[h] = i;
